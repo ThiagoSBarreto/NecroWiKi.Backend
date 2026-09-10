@@ -7,7 +7,6 @@ namespace NecroWiKi.Application.Models
 {
     public class RegisterModel
     {
-        public GamesEnum Game { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
