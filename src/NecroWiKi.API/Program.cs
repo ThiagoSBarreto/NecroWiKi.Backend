@@ -22,6 +22,10 @@ namespace NecroWiKi.API
                 builder.Configuration.GetSection("LoggerSettings")
             );
 
+            builder.Services.Configure<WoWSettings>(
+                builder.Configuration.GetSection("Games:WoW")
+            );
+
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
 
