@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Itens de Solução/">
+    <File Path="docker-compose.yml" />
+    <File Path="Dockerfile" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/NecroWiKi.API/NecroWiKi.API.csproj" Id="ca4593f2-1570-4fc0-8992-56544fd0db80" />
+    <Project Path="src/NecroWiKi.Application/NecroWiKi.Application.csproj" Id="b2f98348-fdad-41d1-95d3-24a55014d6f5" />
+    <Project Path="src/NecroWiKi.Infrastructure/NecroWiKi.Infrastructure.csproj" Id="5df01b61-43ff-45ce-99a4-0ef07be3f02c" />
+  </Folder>
+</Solution>

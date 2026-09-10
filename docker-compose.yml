@@ -1,0 +1,22 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: necro_wiki_api
+
+    restart: unless-stopped
+
+    ports:
+      - "6018:8080"
+
+    networks:
+      - necro_network
+
+    volumes:
+      - /mnt/hd2/Games:/games
+
+networks:
+  necro_network:
+    external: true
