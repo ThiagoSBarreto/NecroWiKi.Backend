@@ -18,14 +18,14 @@ namespace NecroWiKi.API.Controllers
         }
 
 
-        [HttpPost("register/wow")]
+        [HttpPost("wow")]
         public async Task<IActionResult> RegisterWoW(RegisterModel model)
         {
             string result = await _registerService.RegisterWoWAsync(model);
             return Ok(new { message = result });
         }
 
-        [HttpPost("register/ragnarok")]
+        [HttpPost("ragnarok")]
         public async Task<IActionResult> RegisterRagnarok(RegisterModel model)
         {
             string result = await _registerService.RegisterRagnarokAsync(model);
