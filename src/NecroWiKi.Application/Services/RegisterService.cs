@@ -158,7 +158,6 @@ public class RegisterService : IRegisterService
         using SHA1 sha1 = SHA1.Create();
 
         byte[] usernamePasswordHash = sha1.ComputeHash(Encoding.UTF8.GetBytes($"{username}:{password}"));
-
         byte[] xHashInput = new byte[salt.Length + usernamePasswordHash.Length];
 
         Buffer.BlockCopy(salt, 0, xHashInput, 0, salt.Length);
@@ -167,15 +166,11 @@ public class RegisterService : IRegisterService
         byte[] xHash = sha1.ComputeHash(xHashInput);
 
         BigInteger x = new BigInteger(xHash, isUnsigned: true, isBigEndian: false);
-
         BigInteger g = new BigInteger(_WoWSettings.Generator);
-
         BigInteger n = BigInteger.Parse(_WoWSettings.Modulus, System.Globalization.NumberStyles.HexNumber);
-
         BigInteger verifier = BigInteger.ModPow(g, x, n);
 
         byte[] verifierBytes = verifier.ToByteArray(isUnsigned: true, isBigEndian: false);
-
         byte[] result = new byte[32];
 
         Buffer.BlockCopy(verifierBytes, 0, result, 0, Math.Min(verifierBytes.Length, result.Length));
