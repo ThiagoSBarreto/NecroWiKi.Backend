@@ -157,7 +157,10 @@ public class RegisterService : IRegisterService
     {
         using SHA1 sha1 = SHA1.Create();
 
-        byte[] h1 = sha1.ComputeHash(Encoding.UTF8.GetBytes($"{username}:{password}"));
+        string credentials = $"{username}:{password}".ToUpperInvariant();
+
+        byte[] h1 = sha1.ComputeHash(Encoding.UTF8.GetBytes(credentials));
+
         byte[] h2Input = new byte[salt.Length + h1.Length];
 
         Buffer.BlockCopy(salt, 0, h2Input, 0, salt.Length);
@@ -166,14 +169,31 @@ public class RegisterService : IRegisterService
         byte[] h2 = sha1.ComputeHash(h2Input);
 
         BigInteger x = new BigInteger(h2, isUnsigned: true, isBigEndian: false);
-        BigInteger g = new BigInteger(_WoWSettings.Generator);
-        BigInteger n = BigInteger.Parse(_WoWSettings.Modulus, System.Globalization.NumberStyles.HexNumber);
+
+        BigInteger g = new BigInteger(7);
+
+        byte[] modulusBytes = Convert.FromHexString(
+            "894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7");
+
+        BigInteger n = new BigInteger(
+            modulusBytes,
+            isUnsigned: true,
+            isBigEndian: true);
+
         BigInteger verifier = BigInteger.ModPow(g, x, n);
 
-        byte[] verifierBytes = verifier.ToByteArray(isUnsigned: true, isBigEndian: false);
+        byte[] verifierBytes = verifier.ToByteArray(
+            isUnsigned: true,
+            isBigEndian: false);
+
         byte[] result = new byte[32];
 
-        Buffer.BlockCopy(verifierBytes, 0, result, 0, Math.Min(verifierBytes.Length, result.Length));
+        Buffer.BlockCopy(
+            verifierBytes,
+            0,
+            result,
+            0,
+            Math.Min(verifierBytes.Length, result.Length));
 
         return result;
     }
