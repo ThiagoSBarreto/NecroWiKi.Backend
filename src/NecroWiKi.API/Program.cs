@@ -17,6 +17,7 @@ namespace NecroWiKi.API
             builder.Services.AddSingleton<ILoggerService, LoggerService>();
 
             builder.Services.AddScoped<IRegisterService, RegisterService>();
+            builder.Services.AddScoped<IGameSystemService, GameSystemService>();
 
             builder.Services.Configure<LoggerSettings>(
                 builder.Configuration.GetSection("LoggerSettings")
