@@ -52,7 +52,7 @@ public class GameSystemService : IGameSystemService
                 string encodedImageName = Uri.EscapeDataString(imageFileName);
 
                 imageUrl =
-                    $"/api/game-system/{system}/image/{encodedImageName}";
+                    $"/api/gamesystem/{system}/image/{encodedImageName}";
             }
 
             GameListDTO game = new GameListDTO
