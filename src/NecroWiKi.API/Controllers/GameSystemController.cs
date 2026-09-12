@@ -11,8 +11,7 @@ namespace NecroWiKi.API.Controllers
         private readonly IGameSystemService _gameSystemService;
 
         public GameSystemController(
-            IGameSystemService gameSystemService
-            )
+            IGameSystemService gameSystemService)
         {
             _gameSystemService = gameSystemService;
         }
@@ -20,16 +19,18 @@ namespace NecroWiKi.API.Controllers
         [HttpGet("{system}/roms")]
         public async Task<IActionResult> GetGameList([FromRoute] string system)
         {
-            List<GameListDTO> list = await _gameSystemService.GetGameList(system.ToUpper());
+            List<GameListDTO> list =
+                await _gameSystemService.GetGameList(system.ToUpperInvariant());
+
             return Ok(list);
         }
 
         [HttpGet("{system}/image/{*fileName}")]
-        public IActionResult GetImage(string system, string fileName)
+        public IActionResult GetImage( [FromRoute] string system, [FromRoute] string fileName)
         {
             string imagePath = Path.Combine(
                 "/games/ROMS",
-                system.ToUpper(),
+                system.ToUpperInvariant(),
                 "images",
                 fileName);
 

@@ -6,97 +6,110 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-public class GameSystemService : IGameSystemService
+namespace NecroWiKi.Application.Services
 {
-    private const string GamesRootPath = "/games/ROMS";
-
-    public Task<List<GameListDTO>> GetGameList(string system)
+    public class GameSystemService : IGameSystemService
     {
-        List<GameListDTO> result = new List<GameListDTO>();
+        private const string GamesRootPath = "/games/ROMS";
 
-        if (string.IsNullOrWhiteSpace(system))
+        public Task<List<GameListDTO>> GetGameList(string system)
         {
-            return Task.FromResult(result);
-        }
+            List<GameListDTO> result = new List<GameListDTO>();
 
-        string systemPath = Path.Combine(GamesRootPath, system);
-        string imagesPath = Path.Combine(systemPath, "images");
-
-        if (!Directory.Exists(systemPath))
-        {
-            return Task.FromResult(result);
-        }
-
-        string[] validExtensions = GetValidExtensions(system);
-
-        IEnumerable<string> romFiles = Directory
-            .EnumerateFiles(systemPath, "*", SearchOption.TopDirectoryOnly)
-            .Where(file =>
-                validExtensions.Contains(
-                    Path.GetExtension(file),
-                    StringComparer.OrdinalIgnoreCase));
-
-        foreach (string romFile in romFiles)
-        {
-            string romName = Path.GetFileNameWithoutExtension(romFile);
-            string imageFileName = $"{romName}.png";
-
-            string physicalImagePath = Path.Combine(
-                imagesPath,
-                imageFileName);
-
-            string imageUrl = string.Empty;
-
-            if (File.Exists(physicalImagePath))
+            if (string.IsNullOrWhiteSpace(system))
             {
-                string encodedImageName = Uri.EscapeDataString(imageFileName);
-
-                imageUrl =
-                    $"/api/games/ROMS/{system}/image/{encodedImageName}";
+                return Task.FromResult(result);
             }
 
-            GameListDTO game = new GameListDTO
-            {
-                Name = romName,
-                ImagePath = imageUrl,
-                RomPath = romFile
-            };
+            string normalizedSystem = system.ToUpperInvariant();
 
-            result.Add(game);
+            string systemPath = Path.Combine(GamesRootPath, normalizedSystem);
+
+            string imagesPath = Path.Combine(systemPath, "images");
+
+            if (!Directory.Exists(systemPath))
+            {
+                return Task.FromResult(result);
+            }
+
+            string[] validExtensions = GetValidExtensions(normalizedSystem);
+
+            IEnumerable<string> romFiles = Directory
+                .EnumerateFiles(
+                    systemPath,
+                    "*",
+                    SearchOption.TopDirectoryOnly)
+                .Where(file =>
+                    validExtensions.Contains(
+                        Path.GetExtension(file),
+                        StringComparer.OrdinalIgnoreCase));
+
+            foreach (string romFile in romFiles)
+            {
+                string romName = Path.GetFileNameWithoutExtension(romFile);
+
+                string imageFileName = $"{romName}.png";
+
+                string physicalImagePath = Path.Combine(
+                    imagesPath,
+                    imageFileName);
+
+                string imageUrl = string.Empty;
+
+                if (File.Exists(physicalImagePath))
+                {
+                    string encodedImageName =
+                        Uri.EscapeDataString(imageFileName);
+
+                    imageUrl =
+                        $"/api/GameSystem/{normalizedSystem}/image/{encodedImageName}";
+                }
+
+                GameListDTO game = new GameListDTO
+                {
+                    Name = romName,
+                    ImagePath = imageUrl,
+                    RomPath = romFile
+                };
+
+                result.Add(game);
+            }
+
+            List<GameListDTO> orderedResult = result
+                .OrderBy(game => game.Name)
+                .ToList();
+
+            return Task.FromResult(orderedResult);
         }
 
-        List<GameListDTO> orderedResult = result
-            .OrderBy(game => game.Name)
-            .ToList();
-
-        return Task.FromResult(orderedResult);
-    }
-
-    private static string[] GetValidExtensions(string system)
-    {
-        if (system.Equals("psx", StringComparison.OrdinalIgnoreCase))
+        private static string[] GetValidExtensions(string system)
         {
+            if (system.Equals(
+                "PSX",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                return new string[]
+                {
+                    ".bin"
+                };
+            }
+
             return new string[]
             {
-                ".bin"
+                ".z64",
+                ".n64",
+                ".v64",
+                ".nes",
+                ".sfc",
+                ".smc",
+                ".gba",
+                ".gb",
+                ".gbc",
+                ".nds",
+                ".iso",
+                ".cue",
+                ".chd"
             };
         }
-
-        return new string[]
-        {
-            ".z64",
-            ".n64",
-            ".v64",
-            ".nes",
-            ".sfc",
-            ".smc",
-            ".gba",
-            ".gb",
-            ".gbc",
-            ".nds",
-            ".iso",
-            ".cue",
-            ".chd"
-        };
     }
 }
