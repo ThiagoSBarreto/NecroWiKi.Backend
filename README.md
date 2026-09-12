@@ -136,6 +136,12 @@ These connection strings correspond to:
 - WoW using an AzerothCore / PlayerBots-compatible authentication database;
 - Ragnarok using a 2012 pre-renewal rAthena-compatible database structure.
 
+## License and legal note
+
+This backend exposes project services for registration and games. CORES, ROMs, images, and game assets must be acquired personally and legally from authorized sources only. The repository should not be used to host, mirror, or redistribute copyrighted ROMs, emulator cores, or protected game images without proper authorization.
+
+The project should be treated as a private or locally managed platform and must be operated only with the permission of the maintainers. It must not be used for piracy or unauthorized distribution of copyrighted content.
+
 ## Related repository
 
 Frontend: https://github.com/NecroHome/NecroWiKi.Frontend
