@@ -10,21 +10,21 @@ public class GameSystemService : IGameSystemService
 {
     private const string GamesRootPath = "/games/ROMS";
 
-    public async Task<List<GameListDTO>> GetGameList(string system)
+    public Task<List<GameListDTO>> GetGameList(string system)
     {
         List<GameListDTO> result = new List<GameListDTO>();
 
         if (string.IsNullOrWhiteSpace(system))
         {
-            return result;
+            return Task.FromResult(result);
         }
 
-        string systemPath = Path.Combine(GamesRootPath, system.ToUpper());
+        string systemPath = Path.Combine(GamesRootPath, system);
         string imagesPath = Path.Combine(systemPath, "images");
 
         if (!Directory.Exists(systemPath))
         {
-            return result;
+            return Task.FromResult(result);
         }
 
         string[] validExtensions = GetValidExtensions(system);
@@ -39,24 +39,37 @@ public class GameSystemService : IGameSystemService
         foreach (string romFile in romFiles)
         {
             string romName = Path.GetFileNameWithoutExtension(romFile);
-            string imagePath = Path.Combine(imagesPath, $"{romName}.png");
+            string imageFileName = $"{romName}.png";
+
+            string physicalImagePath = Path.Combine(
+                imagesPath,
+                imageFileName);
+
+            string imageUrl = string.Empty;
+
+            if (File.Exists(physicalImagePath))
+            {
+                string encodedImageName = Uri.EscapeDataString(imageFileName);
+
+                imageUrl =
+                    $"/api/game-system/{system}/image/{encodedImageName}";
+            }
 
             GameListDTO game = new GameListDTO
             {
                 Name = romName,
-                RomPath = romFile,
-                ImagePath = File.Exists(imagePath)
-                    ? imagePath
-                    : string.Empty
+                ImagePath = imageUrl,
+                RomPath = romFile
             };
 
             result.Add(game);
         }
 
-        return await Task.FromResult(
-            result
-                .OrderBy(game => game.Name)
-                .ToList());
+        List<GameListDTO> orderedResult = result
+            .OrderBy(game => game.Name)
+            .ToList();
+
+        return Task.FromResult(orderedResult);
     }
 
     private static string[] GetValidExtensions(string system)

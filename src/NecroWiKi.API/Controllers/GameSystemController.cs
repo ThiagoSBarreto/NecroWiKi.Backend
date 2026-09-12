@@ -23,5 +23,22 @@ namespace NecroWiKi.API.Controllers
             List<GameListDTO> list = await _gameSystemService.GetGameList(system);
             return Ok(list);
         }
+
+        [HttpGet("{system}/image/{*fileName}")]
+        public IActionResult GetImage(string system, string fileName)
+        {
+            string imagePath = Path.Combine(
+                "/games/ROMS",
+                system.ToUpper(),
+                "images",
+                fileName);
+
+            if (!System.IO.File.Exists(imagePath))
+            {
+                return NotFound();
+            }
+
+            return PhysicalFile(imagePath, "image/png");
+        }
     }
 }
