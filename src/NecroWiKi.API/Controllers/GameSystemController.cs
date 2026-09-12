@@ -41,5 +41,21 @@ namespace NecroWiKi.API.Controllers
 
             return PhysicalFile(imagePath, "image/png");
         }
+
+        [HttpGet("{system}/rom/{*fileName}")]
+        public IActionResult GetRom([FromRoute] string system, [FromRoute] string fileName)
+        {
+            string romPath = Path.Combine("/games/ROMS", system.ToUpperInvariant(), fileName);
+
+            if (!System.IO.File.Exists(romPath))
+            {
+                return NotFound();
+            }
+
+            return PhysicalFile(
+                romPath,
+                "application/octet-stream",
+                enableRangeProcessing: true);
+        }
     }
 }

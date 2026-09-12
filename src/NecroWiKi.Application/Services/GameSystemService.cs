@@ -65,11 +65,17 @@ namespace NecroWiKi.Application.Services
                         $"/api/GameSystem/{normalizedSystem}/image/{encodedImageName}";
                 }
 
+                string encodedRomName =
+                    Uri.EscapeDataString(Path.GetFileName(romFile));
+
+                string romUrl =
+                    $"/api/GameSystem/{normalizedSystem}/rom/{encodedRomName}";
+
                 GameListDTO game = new GameListDTO
                 {
                     Name = romName,
                     ImagePath = imageUrl,
-                    RomPath = romFile
+                    RomPath = romUrl
                 };
 
                 result.Add(game);
