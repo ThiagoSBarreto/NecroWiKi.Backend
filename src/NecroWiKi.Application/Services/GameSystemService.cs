@@ -120,7 +120,14 @@ namespace NecroWiKi.Application.Services
 
             foreach (IFormFile romFile in romFiles)
             {
-                string romFileName = Path.GetFileName(romFile.FileName);
+                string extension = Path.GetExtension(romFile.FileName);
+
+                if (string.IsNullOrWhiteSpace(extension))
+                {
+                    continue;
+                }
+
+                string romFileName = $"{name.Trim()}{extension}";
                 string romPath = Path.Combine(systemPath, romFileName);
 
                 await using FileStream stream = new FileStream(romPath, FileMode.Create);
