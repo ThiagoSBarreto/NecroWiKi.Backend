@@ -20,7 +20,7 @@ namespace NecroWiKi.API.Controllers
         [HttpGet("{system}/roms")]
         public async Task<IActionResult> GetGameList([FromRoute] string system)
         {
-            List<GameListDTO> list = await _gameSystemService.GetGameList(system);
+            List<GameListDTO> list = await _gameSystemService.GetGameList(system.ToUpper());
             return Ok(list);
         }
 
