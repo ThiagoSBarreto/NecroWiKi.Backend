@@ -69,6 +69,73 @@ The application reads endpoint and database configuration from the `appsettings.
 - connection strings for WoW and Ragnarok services;
 - game settings and shared storage paths.
 
+## Docker Compose
+
+The backend repository can be configured with a compose file like this:
+
+```yaml
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: necro_wiki_api
+    restart: unless-stopped
+    ports:
+      - "6018:8080"
+    networks:
+      - necro_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /path/to/Games:/games
+
+networks:
+  necro_network:
+    external: true
+```
+
+The backend compose file should define:
+
+- the API port (`6018:8080`);
+- the container name (`necro_wiki_api`);
+- the same Docker network used by the frontend (`necro_network`);
+- the shared games folder mount (`/path/to/Games:/games`).
+
+The mounted games directory must follow the expected structure:
+
+```text
+/games/ROMS/
+  GBA/
+    images/
+  SNES/
+    images/
+  PSX/
+    images/
+  N64/
+    images/
+```
+
+That structure lets the API expose ROM and cover resources by system.
+
+## Settings and database connections
+
+The backend configuration should contain the connection strings used by the two supported game systems:
+
+```json
+{
+  "ConnectionStrings": {
+    "WoW": "Server=host.docker.internal;Port=3306;Database=acore_auth;User ID=acore;Password=acore;",
+    "Ragnarok": "Server=mariadb_local;Port=3306;Database=ragnarok;User ID=ragnarok;Password=ragnarok;"
+  }
+}
+```
+
+These connection strings correspond to:
+
+- WoW using an AzerothCore / PlayerBots-compatible authentication database;
+- Ragnarok using a 2012 pre-renewal rAthena-compatible database structure.
+
 ## Related repository
 
 Frontend: https://github.com/NecroHome/NecroWiKi.Frontend
