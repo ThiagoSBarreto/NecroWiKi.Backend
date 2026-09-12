@@ -69,7 +69,7 @@ namespace NecroWiKi.Application.Services
                     Uri.EscapeDataString(Path.GetFileName(romFile));
 
                 string romUrl =
-                    $"/api/GameSystem/{normalizedSystem}/{encodedRomName}";
+                    $"/api/GameSystem/{normalizedSystem}/rom/{encodedRomName}";
 
                 GameListDTO game = new GameListDTO
                 {
