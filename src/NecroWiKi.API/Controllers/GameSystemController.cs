@@ -8,6 +8,8 @@ namespace NecroWiKi.API.Controllers
     [Route("api/[controller]")]
     public class GameSystemController : ControllerBase
     {
+        private const long MaxUploadBytes = 2L * 1024 * 1024 * 1024;
+
         private readonly IGameSystemService _gameSystemService;
 
         public GameSystemController(IGameSystemService gameSystemService)
@@ -49,6 +51,8 @@ namespace NecroWiKi.API.Controllers
         }
 
         [HttpPost("{system}/upload")]
+        [RequestSizeLimit(MaxUploadBytes)]
+        [RequestFormLimits(MultipartBodyLengthLimit = MaxUploadBytes)]
         public async Task<IActionResult> UploadGame([FromRoute] string system, [FromForm] string name, [FromForm] List<IFormFile> romFiles, [FromForm] IFormFile? coverFile)
         {
             string result = await _gameSystemService.UploadGame(system.ToUpperInvariant(), name, romFiles, coverFile);
