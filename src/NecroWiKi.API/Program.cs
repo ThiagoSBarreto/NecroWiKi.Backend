@@ -3,6 +3,7 @@ using NecroWiKi.Application.Interfaces;
 using NecroWiKi.Application.Extensions;
 using NecroWiKi.Application.Models;
 using NecroWiKi.Application.Services;
+using NecroWiKi.API.Services;
 using Microsoft.EntityFrameworkCore;
 using NecroWiKi.Infrastructure.Persistence;
 
@@ -21,6 +22,8 @@ namespace NecroWiKi.API
             builder.Services.AddScoped<IRegisterService, RegisterService>();
             builder.Services.AddScoped<IGameSystemService, GameSystemService>();
             builder.Services.AddScoped<IDownloadService, DownloadService>();
+            builder.Services.AddScoped<ISaveStateService, SaveStateService>();
+            builder.Services.AddScoped<ISaveStateIdentityService, SaveStateIdentityService>();
 
             builder.Services.AddDbContext<AppDbContext>(options =>
             {

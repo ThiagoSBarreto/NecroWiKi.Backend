@@ -13,6 +13,7 @@ services:
 
     environment:
       ConnectionStrings__DefaultConnection: "Server=mariadb_local;Port=3306;Database=NecroWiKi;User=necrowiki;Password=necrowiki123;"
+      SaveStates__Path: /saves
       TZ: "America/Sao_Paulo"
 
     networks:
@@ -23,6 +24,7 @@ services:
 
     volumes:
       - /mnt/hd2/Games:/games
+      - /mnt/hd2/Games/SAVES:/saves
 
 networks:
   necro_network:
