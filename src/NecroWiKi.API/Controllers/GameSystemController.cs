@@ -50,6 +50,22 @@ namespace NecroWiKi.API.Controllers
             return PhysicalFile(romPath, "application/octet-stream", enableRangeProcessing: true);
         }
 
+        [HttpHead("{system}/rom/{*fileName}")]
+        public IActionResult GetRomHeaders([FromRoute] string system, [FromRoute] string fileName)
+        {
+            string romPath = Path.Combine("/games/ROMS", system.ToUpperInvariant(), fileName);
+
+            if (!System.IO.File.Exists(romPath))
+            {
+                return NotFound();
+            }
+
+            Response.ContentType = "application/octet-stream";
+            Response.ContentLength = new FileInfo(romPath).Length;
+            Response.Headers.AcceptRanges = "bytes";
+            return Ok();
+        }
+
         [HttpPost("{system}/upload")]
         [RequestSizeLimit(MaxUploadBytes)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxUploadBytes)]
