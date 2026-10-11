@@ -10,5 +10,6 @@ namespace NecroWiKi.Application.Interfaces
     {
         Task<List<GameListDTO>> GetGameList(string system);
         Task<string> UploadGame(string system, string name, List<IFormFile> romFiles, IFormFile? coverFile);
+        Task<string> UpdateGame(string system, string currentName, string name, IFormFile? romFile, IFormFile? coverFile);
     }
 }
