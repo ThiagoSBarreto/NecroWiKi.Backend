@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using NecroWiKi.Application.Interfaces;
 using NecroWiKi.Application.Models;
 
@@ -18,6 +19,7 @@ namespace NecroWiKi.API.Controllers
         }
 
         [HttpGet("{system}/roms")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetGameList([FromRoute] string system)
         {
             List<GameListDTO> list = await _gameSystemService.GetGameList(system.ToUpperInvariant());
@@ -25,6 +27,7 @@ namespace NecroWiKi.API.Controllers
         }
 
         [HttpGet("{system}/image/{*fileName}")]
+        [AllowAnonymous]
         public IActionResult GetImage([FromRoute] string system, [FromRoute] string fileName)
         {
             string imagePath = Path.Combine("/games/ROMS", system.ToUpperInvariant(), "images", fileName);
@@ -38,6 +41,7 @@ namespace NecroWiKi.API.Controllers
         }
 
         [HttpGet("{system}/rom/{*fileName}")]
+        [AllowAnonymous]
         public IActionResult GetRom([FromRoute] string system, [FromRoute] string fileName)
         {
             string romPath = Path.Combine("/games/ROMS", system.ToUpperInvariant(), fileName);
@@ -51,6 +55,7 @@ namespace NecroWiKi.API.Controllers
         }
 
         [HttpHead("{system}/rom/{*fileName}")]
+        [AllowAnonymous]
         public IActionResult GetRomHeaders([FromRoute] string system, [FromRoute] string fileName)
         {
             string romPath = Path.Combine("/games/ROMS", system.ToUpperInvariant(), fileName);
@@ -67,6 +72,7 @@ namespace NecroWiKi.API.Controllers
         }
 
         [HttpPost("{system}/upload")]
+        [Authorize(Roles = "Admin")]
         [RequestSizeLimit(MaxUploadBytes)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxUploadBytes)]
         public async Task<IActionResult> UploadGame([FromRoute] string system, [FromForm] string name, [FromForm] List<IFormFile> romFiles, [FromForm] IFormFile? coverFile)
@@ -76,6 +82,7 @@ namespace NecroWiKi.API.Controllers
         }
 
         [HttpPut("{system}/roms/{currentName}")]
+        [Authorize(Roles = "Admin")]
         [RequestSizeLimit(MaxUploadBytes)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxUploadBytes)]
         public async Task<IActionResult> UpdateGame(
