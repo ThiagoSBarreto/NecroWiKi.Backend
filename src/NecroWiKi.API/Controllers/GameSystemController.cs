@@ -74,5 +74,35 @@ namespace NecroWiKi.API.Controllers
             string result = await _gameSystemService.UploadGame(system.ToUpperInvariant(), name, romFiles, coverFile);
             return Ok(new { message = result });
         }
+
+        [HttpPut("{system}/roms/{currentName}")]
+        [RequestSizeLimit(MaxUploadBytes)]
+        [RequestFormLimits(MultipartBodyLengthLimit = MaxUploadBytes)]
+        public async Task<IActionResult> UpdateGame(
+            [FromRoute] string system,
+            [FromRoute] string currentName,
+            [FromForm] string name,
+            [FromForm] IFormFile? romFile,
+            [FromForm] IFormFile? coverFile)
+        {
+            try
+            {
+                string result = await _gameSystemService.UpdateGame(
+                    system.ToUpperInvariant(), currentName, name, romFile, coverFile);
+                return Ok(new { message = result });
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(new { message = exception.Message });
+            }
+            catch (FileNotFoundException exception)
+            {
+                return NotFound(new { message = exception.Message });
+            }
+            catch (InvalidOperationException exception)
+            {
+                return Conflict(new { message = exception.Message });
+            }
+        }
     }
 }

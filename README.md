@@ -8,7 +8,7 @@ This backend is responsible for:
 
 - handling account registration for supported communities such as WoW and Ragnarok;
 - exposing game-system metadata and ROM/image resources;
-- uploading ROM and cover files to the game storage directory;
+- uploading and editing ROM and cover files in the game storage directory;
 - providing a centralized API layer for the NecroWiKi frontend and related services.
 
 ## Architecture
@@ -40,6 +40,7 @@ The main controllers expose the following routes:
 - `GET /api/GameSystem/{system}/image/{fileName}`
 - `GET /api/GameSystem/{system}/rom/{fileName}`
 - `POST /api/GameSystem/{system}/upload`
+- `PUT /api/GameSystem/{system}/roms/{currentName}`
 
 ## Technology stack
 
