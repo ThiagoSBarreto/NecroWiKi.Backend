@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using NecroWiKi.Application.Interfaces;
 
 namespace NecroWiKi.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/savestate")]
 public class SaveStateController : ControllerBase
 {
@@ -22,6 +25,11 @@ public class SaveStateController : ControllerBase
         [FromQuery] string gameKey,
         CancellationToken cancellationToken)
     {
+        if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid accountId) || accountId != browserId)
+        {
+            return Forbid();
+        }
+
         if (string.IsNullOrWhiteSpace(gameKey))
         {
             return BadRequest();
@@ -42,6 +50,11 @@ public class SaveStateController : ControllerBase
         [FromQuery] string gameKey,
         CancellationToken cancellationToken)
     {
+        if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid accountId) || accountId != browserId)
+        {
+            return Forbid();
+        }
+
         if (string.IsNullOrWhiteSpace(gameKey))
         {
             return BadRequest();
