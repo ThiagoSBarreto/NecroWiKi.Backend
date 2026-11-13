@@ -113,7 +113,8 @@ namespace NecroWiKi.API
                     policy
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("Content-Disposition");
                 });
             });
 
